@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -21,9 +21,16 @@ export class DbService {
   }
 
   validarCredenciales(user, password): boolean {
+
+    let parametros: NavigationExtras = {
+      state: {
+        usuario: user,
+      }
+    };
+
     if (user == "admin" && password == "admin") {
       this.validador = true;
-      this.router.navigate(["principal"]);
+      this.router.navigate(["principal"], parametros);
       return true;
     } 
     else {

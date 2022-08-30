@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-principal',
@@ -7,9 +8,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PrincipalPage implements OnInit {
 
-  constructor() { }
+  mdl_usuario: string = "";
+
+  constructor(private router: Router) { }
 
   ngOnInit() {
+    try {
+      this.mdl_usuario = this.router.getCurrentNavigation().extras.state.usuario;
+    } catch(err) {
+      this.router.navigate(["login"]);
+    }
   }
 
 }
