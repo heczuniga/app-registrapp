@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-toolbar class="degradado">
+
+    <ion-title>RegistrApp</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <div class="ion-text-center ion-padding">
+    <ion-label class="titulo">Presente!</ion-label>
+  </div>
+
+  <div class="ion-padding">
+    <ion-img class="fondo" src="assets/calendar.png"></ion-img>
+  </div>
+
+  <ion-item>
+    <ion-label position="floating">Usuario</ion-label>
+    <ion-input (keyup)="habilitarBoton()" [(ngModel)]="mdl_user"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label position="floating">Contraseña</ion-label>
+    <ion-input (keyup)="habilitarBoton()" type="password" [(ngModel)]="mdl_pass"></ion-input>
+  </ion-item>
+  <div class="ion-text-center ion-padding-top">
+    <ion-button [disabled]="mdl_deshabilitarbotoningresar" (click)="ingresar()" expand="block" class="degradado">
+      <ion-icon name="log-in" slot="start"></ion-icon>
+      Ingresar
+    </ion-button>
+  </div>
+  <div class="ion-text-center ion-padding-top">
+    <a href="#">Olvidé mi contraseña</a>
+  </div>
+</ion-content>
