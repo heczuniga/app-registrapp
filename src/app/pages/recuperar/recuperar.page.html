@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Recuperar contraseña</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <div class="ion-padding">
+    <ion-img class="fondo" src="assets/pin-code.png"></ion-img>
+  </div>
+
+  <ion-card>
+    <ion-card-content>
+      Ingresa tu correo DuocUC y presiona el botón "Siguiente". En breve te enviaremos un código de 4 dígitos que te permitirá cambiar tu contraseña. Recuerda
+      revisar siempre la carpeta de spam.
+    </ion-card-content>
+  </ion-card>
+
+  <ion-item>
+    <ion-label position="floating">Ingrese su e-mail</ion-label>
+    <ion-input autofocus="true" (keyup)="habilitarBoton()" [(ngModel)]="mdl_email"></ion-input>
+  </ion-item>
+
+  <div class="ion-text-center ion-padding-top">
+    <ion-button inputmode="email" [disabled]="mdl_deshabilitarbotoningresar" (click)="siguiente()" expand="block" class="degradado">
+      <ion-icon name="arrow-redo-outline" slot="start"></ion-icon>
+      Siguiente
+    </ion-button>
+  </div>
+
+</ion-content>

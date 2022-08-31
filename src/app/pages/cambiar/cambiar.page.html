@@ -1,0 +1,49 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Cambiar contraseña</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <div class="ion-padding">
+    <ion-img class="fondo" src="assets/change-password.png"></ion-img>
+  </div>
+
+  <ion-card>
+    <ion-card-content>
+      Ingresa el código de 4 dígitos enviado a tu correo para poder cambiar tu contraseña por una nueva.
+    </ion-card-content>
+  </ion-card>
+
+  <ion-item>
+    <ion-label position="fixed">e-mail</ion-label>
+    <ion-input color="medium" disabled="true" (keyup)="habilitarBoton()">{{ mdl_email }}</ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="floating">Código de recuperación de 4 dígitos</ion-label>
+    <ion-input type="text" minlength="4" maxlength="4" autofocus="true" (keyup)="habilitarBoton()" [(ngModel)]="mdl_pin"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="floating">Nueva contraseña</ion-label>
+    <ion-input (keyup)="habilitarBoton()" type="password" [(ngModel)]="mdl_nuevapass"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="floating">Repite nueva contraseña</ion-label>
+    <ion-input (keyup)="habilitarBoton()" type="password" [(ngModel)]="mdl_nuevapassrepetida"></ion-input>
+  </ion-item>
+
+  <div class="ion-text-center ion-padding-top">
+    <ion-button [disabled]="mdl_deshabilitarbotoningresar" (click)="cambiar()" expand="block" class="degradado">
+      <ion-icon name="repeat-outline" slot="start"></ion-icon>
+      Cambiar
+    </ion-button>
+  </div>
+
+</ion-content>

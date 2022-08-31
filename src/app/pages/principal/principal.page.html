@@ -9,4 +9,25 @@
 
 <ion-content>
 
+  <div class="ion-text-center ion-padding">
+    <ion-label class="titulo">Presente profesor!</ion-label>
+  </div>
+
+  <div class="ion-padding">
+    <ion-img class="fondo" src="assets/qr-code.png"></ion-img>
+  </div>
+
+  <ion-card>
+    <ion-card-content>
+      Espera a que tu docente proyecte el código QR en el proyector de tu sala. Luego escanéalo con tu celular para marcar tu asistencia.
+    </ion-card-content>
+  </ion-card>
+
+  <div class="ion-text-center ion-padding-top">
+    <ion-button [disabled]="mdl_deshabilitarbotoningresar" (click)="marcarAsistencia()" expand="block" class="degradado">
+      <ion-icon name="hand-right-outline" slot="start"></ion-icon>
+      Marcar asistencia
+    </ion-button>
+  </div>
+
 </ion-content>

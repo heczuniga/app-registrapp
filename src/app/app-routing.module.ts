@@ -19,6 +19,16 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
+    path: 'recuperar',
+    redirectTo: 'recuperar',
+    pathMatch: 'full'
+  },
+  {
+    path: 'cambiar',
+    redirectTo: 'cambiar',
+    pathMatch: 'full'
+  },
+  {
     path: 'e404',
     redirectTo: 'e404',
     pathMatch: 'full'
@@ -41,6 +51,16 @@ const routes: Routes = [
     path: 'e404',
     loadChildren: () => import('./pages/e404/e404.module').then(m => m.E404PageModule)
   },
+  {
+    path: 'recuperar',
+    loadChildren: () => import('./pages/recuperar/recuperar.module').then(m => m.RecuperarPageModule),
+  },
+  {
+    path: 'cambiar',
+    loadChildren: () => import('./pages/cambiar/cambiar.module').then(m => m.CambiarPageModule)
+  },
+
+
 ];
 
 @NgModule({
