@@ -23,12 +23,11 @@ export class LoginPage implements OnInit {
   }
 
   ngOnInit() {
+    /* Deshabilitamos el botón al iniciar la página */
     this.mdl_deshabilitarbotoningresar = true;
-
-    // console.log(localStorage);
-
   }
 
+  /* Rutina que muestra mensaje en formato toast */
   async mostrarToast() {
     const toast = await this.toastController.create({
       message: 'Credenciales inválidas!',
@@ -37,16 +36,7 @@ export class LoginPage implements OnInit {
     toast.present();
   }
 
-  async mostrarMensaje() {
-    const alert = await this.alertController.create({
-      header: 'Información',
-      message: 'Credenciales inválidas!',
-      buttons: ['OK'],
-    });
-
-    await alert.present();
-  }
-
+  /* Rutina que habilita o deshabilita el botón de ingreso */
   habilitarBoton(): void {
 
     if (this.mdl_user.length > 0 && this.mdl_pass.length > 0)
@@ -56,15 +46,12 @@ export class LoginPage implements OnInit {
       
   }
 
+  /* Rutina que manejo el ingreso a la aplicación validando las credenciales */
   ingresar(): void {
     let validador = this.db.validarCredenciales(this.mdl_user, this.mdl_pass);
     if (!validador) {
       this.mostrarToast();
     } 
-  }
-
-  recuperar(): void {
-    this.router.navigate(["recuperar"]);
   }
 
 }

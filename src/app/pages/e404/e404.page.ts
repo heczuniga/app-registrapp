@@ -13,6 +13,7 @@ export class E404Page implements OnInit {
   ngOnInit() {
   }
 
+  /* Manejo para volver a la página de login */
   volver() {
     this.router.navigate(['login']);
   }

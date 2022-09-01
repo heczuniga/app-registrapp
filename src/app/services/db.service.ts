@@ -41,12 +41,6 @@ export class DbService {
       return this.validador;
     }
 
-    // console.log(localStorage);
-    //console.log(usuario);
-    //usuario.password = "otra";
-    // console.log(usuario);
-    // localStorage.setItem("usuarios", JSON.stringify(usuario));
-
     /* Lo encuentra, se chequea login y password */
     if (user === usuario.login && password === usuario.password) {
       this.validador = true;
@@ -64,6 +58,7 @@ export class DbService {
 
     const KL_DOMINIOALUMNODUOCUC = "@duocuc.cl"
     let validadorEmail: boolean = false;
+    let login: string = "";
 
     /* Limpiamos el correo de espacios en blanco y lo dejamos en minúsculas */
     email = email.trim().toLowerCase();
@@ -83,6 +78,18 @@ export class DbService {
     /* Ahora validamos que sea un correo de alumno DuocUC válido */
     if (email.substring(email.length - KL_DOMINIOALUMNODUOCUC.length, email.length) != KL_DOMINIOALUMNODUOCUC)
       return "Ingrese un correo de alumno DuocUC válido!";
+
+    /* Obtenemos el login a partir del email*/
+    login = email.substring(0, email.lastIndexOf("@"));
+
+    /* Buscamos si el usuario está en la "base de datos" de usuarios */
+    let bdUsuarios = JSON.parse(localStorage.getItem("usuarios"));
+    let usuario = bdUsuarios.find(usuario => usuario.login === login);
+
+    /* Si no lo encuentra, se retorna un error */
+    if (usuario === undefined) {
+      return "El correo no corresponde al de un alumno DuocUC válido!";
+    }
 
     /* Si está todo OK navegamos a la siguiente página */
     this.router.navigate(["cambiar"], parametros);
@@ -106,6 +113,5 @@ export class DbService {
     return "";
     
   }
-
 
 }

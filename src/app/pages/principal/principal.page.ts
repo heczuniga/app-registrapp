@@ -15,6 +15,7 @@ export class PrincipalPage implements OnInit {
             private toastController: ToastController) { }
 
   ngOnInit() {
+    /* Recuperamos parámetros enviados */
     try {
       this.mdl_usuario = this.router.getCurrentNavigation().extras.state.usuario;
     } catch(err) {
@@ -22,6 +23,7 @@ export class PrincipalPage implements OnInit {
     }
   }
 
+  /* Rutina que muestra mensaje en formato toast */
   async mostrarToast() {
     const toast = await this.toastController.create({
       message: 'Funcionalidad no disponible',
@@ -30,7 +32,10 @@ export class PrincipalPage implements OnInit {
     toast.present();
   }
 
+  /* Rutina que maneja el marcar la asistencia */
   marcarAsistencia(): void {
+
+    /* Solo muestra un toast por el momento */
     this.mostrarToast();
   }
 

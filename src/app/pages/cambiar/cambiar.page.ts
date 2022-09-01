@@ -11,7 +11,7 @@ import { DbService } from 'src/app/services/db.service';
 export class CambiarPage implements OnInit {
 
   mdl_email: string = "";
-  mdl_deshabilitarbotoningresar: boolean = true;
+  mdl_deshabilitarbotoncambiar: boolean = true;
   mdl_pin: string = "";
   mdl_nuevapass: string = "";
   mdl_nuevapassrepetida: string = "";
@@ -24,15 +24,15 @@ export class CambiarPage implements OnInit {
             private alertController: AlertController) { }
 
   ngOnInit() {
-
+    /* Recuperamos parámetros enviados */
     try {
       this.mdl_email = this.router.getCurrentNavigation().extras.state.email;
     } catch(err) {
       this.router.navigate(["recuperar"]);
     }
-
   }
 
+  /* Rutina que muestra mensaje en formato alert */
   async mostrarMensaje() {
     const alert = await this.alertController.create({
       header: 'Información',
@@ -43,6 +43,7 @@ export class CambiarPage implements OnInit {
     await alert.present();
   }
 
+  /* Rutina que muestra mensaje en formato toast */
   async mostrarToast(mensaje: string) {
     const toast = await this.toastController.create({
       message: mensaje,
@@ -51,15 +52,17 @@ export class CambiarPage implements OnInit {
     toast.present();
   }
 
+  /* Rutina que habilita o deshabilita el botón de ingreso */
   habilitarBoton(): void {
 
     if (this.mdl_pin.length === 4 && this.mdl_nuevapass.length > 0 && this.mdl_nuevapassrepetida.length > 0)
-      this.mdl_deshabilitarbotoningresar = false;
+      this.mdl_deshabilitarbotoncambiar = false;
     else
-      this.mdl_deshabilitarbotoningresar = true;
+      this.mdl_deshabilitarbotoncambiar = true;
      
   }
 
+  /* Rutina que maneja el cambio de contraseña */
   cambiar(): void {
     let mensaje = this.db.validarCambiarContrasena(this.mdl_pin, this.mdl_nuevapass, this.mdl_nuevapassrepetida);
     let login: string = "";
@@ -79,23 +82,16 @@ export class CambiarPage implements OnInit {
     let bdUsuarios = JSON.parse(localStorage.getItem("usuarios"));
     let usuario = bdUsuarios.find(usuario => usuario.login === login);
 
-    /* Si no lo encuentra, se retorna simplemente */
+    /* Si no lo encuentra, se retorna mostrando un error */
     if (usuario === undefined) {
+      this.mostrarToast("El correo no corresponde al de un alumno DuocUC válido!");
       return;
     }
 
     /* Seteamos la nueva password */
-
-    // console.log("Ver antes");
-    // console.log(localStorage);
-
     usuario.password = this.mdl_nuevapass;
-    // localStorage.clear();
     localStorage.setItem("usuarios", JSON.stringify(bdUsuarios));
 
-    // console.log("Ver después");
-    // console.log(localStorage);
-    
     this.mostrarMensaje();
     this.router.navigate(['/login']);
 

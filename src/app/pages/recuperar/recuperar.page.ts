@@ -10,15 +10,17 @@ import { ToastController } from '@ionic/angular';
 export class RecuperarPage implements OnInit {
 
   mdl_email: string = "";
-  mdl_deshabilitarbotoningresar = false;
+  mdl_deshabilitarbotonsiguiente = false;
 
   constructor(private db: DbService,
             private toastController: ToastController) { }
 
   ngOnInit() {
-    this.mdl_deshabilitarbotoningresar = true;
+    /* Deshabilitamos el botón al iniciar la página */
+    this.mdl_deshabilitarbotonsiguiente = true;
   }
 
+  /* Rutina que muestra mensaje en formato toast */
   async mostrarToast(mensaje: string) {
     const toast = await this.toastController.create({
       message: mensaje,
@@ -27,15 +29,17 @@ export class RecuperarPage implements OnInit {
     toast.present();
   }
 
+  /* Rutina que habilita o deshabilita el botón siguiente */
   habilitarBoton(): void {
 
     if (this.mdl_email.length > 0)
-      this.mdl_deshabilitarbotoningresar = false;
+      this.mdl_deshabilitarbotonsiguiente = false;
     else
-      this.mdl_deshabilitarbotoningresar = true;
+      this.mdl_deshabilitarbotonsiguiente = true;
      
   }
 
+  /* Rutina que maneja la navegación a la página de cambio de contraseña validando el e-mail DuocUC */
   siguiente(): void {
     
     let mensajeError: string = "";

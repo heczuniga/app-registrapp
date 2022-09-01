@@ -24,9 +24,6 @@ export class AppComponent {
     /* Agregamos esta "base de datos" al objeto localStorage */
     localStorage.clear();
     localStorage.setItem("usuarios", JSON.stringify(bdUsuarios));
-    // console.log("Al inicio!")
-    // console.log(localStorage)
-
 
   }
 
