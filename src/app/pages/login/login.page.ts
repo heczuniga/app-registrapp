@@ -12,7 +12,7 @@ import { DbService } from 'src/app/services/db.service';
 
 export class LoginPage implements OnInit {
 
-  mdl_user: string = '';
+  mdl_login: string = '';
   mdl_pass: string = '';
   mdl_deshabilitarbotoningresar: boolean = false;
 
@@ -39,7 +39,7 @@ export class LoginPage implements OnInit {
   /* Rutina que habilita o deshabilita el botón de ingreso */
   habilitarBoton(): void {
 
-    if (this.mdl_user.length > 0 && this.mdl_pass.length > 0)
+    if (this.mdl_login.length > 0 && this.mdl_pass.length > 0)
       this.mdl_deshabilitarbotoningresar = false;
     else
       this.mdl_deshabilitarbotoningresar = true;
@@ -48,7 +48,7 @@ export class LoginPage implements OnInit {
 
   /* Rutina que manejo el ingreso a la aplicación validando las credenciales */
   ingresar(): void {
-    let validador = this.db.validarCredenciales(this.mdl_user, this.mdl_pass);
+    let validador = this.db.validarCredenciales(this.mdl_login, this.mdl_pass);
     if (!validador) {
       this.mostrarToast();
     } 

@@ -15,13 +15,14 @@
 
   <ion-card>
     <ion-card-content>
-      Ingresa tu correo DuocUC y presiona el botón "Siguiente". En breve te enviaremos un código de 4 dígitos que te permitirá cambiar tu contraseña. Recuerda
-      revisar siempre la carpeta de spam.
+      <p><span>&#8226;</span> Ingresa tu correo DuocUC y presiona el botón "Siguiente".</p>
+      <p><span>&#8226;</span> En breve te enviaremos un código de 4 dígitos que te permitirá cambiar tu contraseña.</p>
+      <p><span>&#8226;</span> Recuerda revisar siempre la carpeta de spam.</p>
     </ion-card-content>
   </ion-card>
 
   <ion-item>
-    <ion-label position="floating">e-mail DuocUC</ion-label>
+    <ion-label position="floating">correo DuocUC</ion-label>
     <ion-input autofocus="true" (keyup)="habilitarBoton()" [(ngModel)]="mdl_email"></ion-input>
   </ion-item>
 

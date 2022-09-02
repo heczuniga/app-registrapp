@@ -22,18 +22,21 @@ export class DbService {
 
   }
 
-  /* Método para la validación de credenciales de ingreso */
-  validarCredenciales(user: string, password: string): boolean {
+  /*
+   * Método para la validación de credenciales de ingreso
+   */
+  validarCredenciales(login: string, password: string): boolean {
 
     let parametros: NavigationExtras = {
       state: {
-        usuario: user,
+        usuario: login,
       }
     };
 
-    /* Buscamos si el usuario está en la "base de datos" de usuarios */
-    let bdUsuarios = JSON.parse(localStorage.getItem("usuarios"));
-    let usuario = bdUsuarios.find(usuario => usuario.login === user);
+    /* Determinamos si existe el usuario */
+    let usuario = this.obtenerUsuario(login);
+    if (this.obtenerUsuario(login) == undefined)
+      return false;
 
     /* Si no lo encuentra, se retorna autenticación inválida */
     if (usuario === undefined) {
@@ -42,18 +45,19 @@ export class DbService {
     }
 
     /* Lo encuentra, se chequea login y password */
-    if (user === usuario.login && password === usuario.password) {
+    if (login === usuario.login && password === usuario.password) {
       this.validador = true;
       this.router.navigate(["principal"], parametros);
     } 
-    else {
+    else
       this.validador = false;
-    }
 
     return this.validador;
   }
 
-  /* Método para la validación de un correo de alumno DuocUC */
+  /*
+   * Método para la validación de un correo de alumno DuocUC
+   */
   validarEmail(email: string): string {
 
     const KL_DOMINIOALUMNODUOCUC = "@duocuc.cl"
@@ -73,28 +77,29 @@ export class DbService {
     let re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     validadorEmail = re.test(email);
     if (!validadorEmail)
-      return "Ingrese un correo válido!";
+      return "Ingrese un e-mail válido!";
 
-    /* Ahora validamos que sea un correo de alumno DuocUC válido */
+    /* Ahora validamos que sea un correo de alumno DuocUC en formato válido */
     if (email.substring(email.length - KL_DOMINIOALUMNODUOCUC.length, email.length) != KL_DOMINIOALUMNODUOCUC)
       return "Ingrese un correo de alumno DuocUC válido!";
 
-    /* Obtenemos el login a partir del email*/
+    /* Obtenemos el login a partir del email y buscamos si el usuario está en la "base de datos" de usuarios */
     login = email.substring(0, email.lastIndexOf("@"));
-
-    /* Buscamos si el usuario está en la "base de datos" de usuarios */
-    let bdUsuarios = JSON.parse(localStorage.getItem("usuarios"));
-    let usuario = bdUsuarios.find(usuario => usuario.login === login);
-
-    /* Si no lo encuentra, se retorna un error */
-    if (usuario === undefined) {
+    if (this.obtenerUsuario(login) == undefined)
       return "El correo no corresponde al de un alumno DuocUC válido!";
-    }
 
     /* Si está todo OK navegamos a la siguiente página */
     this.router.navigate(["cambiar"], parametros);
     return "";
 
+  }
+  
+  /*
+   *  Método para obtener un objeto usuario a partir de un login
+   */
+  obtenerUsuario(login: string): any {
+    let bdUsuarios = JSON.parse(localStorage.getItem("usuarios"));
+    return bdUsuarios.find(usuario => usuario.login === login);
   }
 
   /* Método para el cambio de contraseña */
@@ -110,6 +115,7 @@ export class DbService {
     if (nuevapass != nuevapassrepetida)
       return "La nueva contraseña y la contraseña repetida no coinciden!";
 
+    /* No hay error */
     return "";
     
   }
