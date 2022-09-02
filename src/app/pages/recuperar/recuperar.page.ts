@@ -8,7 +8,6 @@ import { ToastController } from '@ionic/angular';
   styleUrls: ['./recuperar.page.scss'],
 })
 export class RecuperarPage implements OnInit {
-
   mdl_email: string = "";
   mdl_deshabilitarbotonsiguiente = false;
 
@@ -20,7 +19,9 @@ export class RecuperarPage implements OnInit {
     this.mdl_deshabilitarbotonsiguiente = true;
   }
 
-  /* Rutina que muestra mensaje en formato toast */
+  /*
+   *  Método que muestra mensaje en formato toast
+   */
   async mostrarToast(mensaje: string) {
     const toast = await this.toastController.create({
       message: mensaje,
@@ -29,19 +30,20 @@ export class RecuperarPage implements OnInit {
     toast.present();
   }
 
-  /* Rutina que habilita o deshabilita el botón siguiente */
+  /* 
+   *  Método que habilita o deshabilita el botón siguiente
+   */
   habilitarBoton(): void {
-
     if (this.mdl_email.length > 0)
       this.mdl_deshabilitarbotonsiguiente = false;
     else
       this.mdl_deshabilitarbotonsiguiente = true;
-     
   }
 
-  /* Rutina que maneja la navegación a la página de cambio de contraseña validando el e-mail DuocUC */
+  /*
+   *  Método que maneja la navegación a la página de cambio de contraseña validando el correo DuocUC
+   */
   async siguiente(): Promise<void> {
-    
     let mensajeError: string = "";
 
     /* Validamos que sea un correo válido */
@@ -49,7 +51,6 @@ export class RecuperarPage implements OnInit {
     if (mensajeError != "") {
       this.mostrarToast(mensajeError);
     } 
-
   }
 
 }

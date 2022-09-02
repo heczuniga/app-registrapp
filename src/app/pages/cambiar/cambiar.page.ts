@@ -9,7 +9,6 @@ import { DbService } from 'src/app/services/db.service';
   styleUrls: ['./cambiar.page.scss'],
 })
 export class CambiarPage implements OnInit {
-
   mdl_email: string = "";
   mdl_deshabilitarbotoncambiar: boolean = true;
   mdl_pin: string = "";
@@ -32,34 +31,39 @@ export class CambiarPage implements OnInit {
     }
   }
 
-  /* Rutina que muestra mensaje en formato alert */
-  async mostrarMensaje() {
+  /*
+   * Método que muestra mensaje en formato alert
+   */
+  async mostrarMensaje(titulo: string, mensaje: string) {
     const alert = await this.alertController.create({
-      header: 'Información',
-      message: 'Se ha cambiado correctamente su contraseña. Se le redirigirá a la página de login.',
+      header: titulo,
+      message: mensaje,
       buttons: ['OK'],
     });
 
     await alert.present();
   }
 
-  /* Rutina que muestra mensaje en formato toast */
+  /*
+   * Método que muestra mensaje en formato toast
+   */
   async mostrarToast(mensaje: string) {
     const toast = await this.toastController.create({
       message: mensaje,
       duration: 2000
     });
+
     toast.present();
   }
 
-  /* Rutina que habilita o deshabilita el botón de ingreso */
+  /*
+   * Método que habilita o deshabilita el botón de ingreso
+   */
   habilitarBoton(): void {
-
     if (this.mdl_pin.length === 4 && this.mdl_nuevapass.length > 0 && this.mdl_nuevapassrepetida.length > 0)
       this.mdl_deshabilitarbotoncambiar = false;
     else
       this.mdl_deshabilitarbotoncambiar = true;
-     
   }
 
   /*
@@ -70,7 +74,9 @@ export class CambiarPage implements OnInit {
     return;
   }
 
-  /* Rutina que maneja el cambio de contraseña */
+  /*
+   * Método que maneja el cambio de contraseña
+   */
   cambiar(): void {
     let mensaje = this.db.validarCambiarContrasena(this.mdl_pin, this.mdl_nuevapass, this.mdl_nuevapassrepetida);
     let login: string = "";
@@ -100,9 +106,8 @@ export class CambiarPage implements OnInit {
     usuario.password = this.mdl_nuevapass;
     localStorage.setItem("usuarios", JSON.stringify(bdUsuarios));
 
-    this.mostrarMensaje();
+    this.mostrarMensaje("Cambio de contraseña", "Se ha cambiado correctamente su contraseña. Se le redirigirá a la página de login.");
     this.router.navigate(['/login']);
-
   }
 
 }

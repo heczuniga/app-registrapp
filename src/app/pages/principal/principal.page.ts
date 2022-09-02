@@ -8,7 +8,6 @@ import { ToastController } from '@ionic/angular';
   styleUrls: ['./principal.page.scss'],
 })
 export class PrincipalPage implements OnInit {
-
   mdl_usuario: string = "";
 
   constructor(private router: Router,
@@ -23,7 +22,9 @@ export class PrincipalPage implements OnInit {
     }
   }
 
-  /* Rutina que muestra mensaje en formato toast */
+  /*
+   * Método que muestra mensaje en formato toast
+   */
   async mostrarToast(mensaje: string) {
     const toast = await this.toastController.create({
       message: mensaje,
@@ -32,7 +33,9 @@ export class PrincipalPage implements OnInit {
     toast.present();
   }
 
-  /* Rutina que maneja el marcar la asistencia */
+  /*
+   * Método que maneja el marcar la asistencia
+   */
   marcarAsistencia(): void {
     /* Solo muestra un toast por el momento */
     this.mostrarToast("Funcionalidad no disponible!");

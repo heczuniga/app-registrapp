@@ -5,28 +5,26 @@ import { NavigationExtras, Router } from '@angular/router';
   providedIn: 'root'
 })
 export class DbService {
-
   validador: boolean = false;
   validadorEmail: boolean = false;
 
   constructor(private router: Router) { }
 
-  /* Método estándar para el manejo de rutas protegidas */
+  /*
+   * Método estándar para el manejo de rutas protegidas
+   */
   canActivate(): boolean {
-
     if (this.validador)
       return true;
 
     this.router.navigate(["e404"]);
     return false;
-
   }
 
   /*
    * Método para la validación de credenciales de ingreso
    */
   async validarCredenciales(login: string, password: string): Promise<boolean> {
-
     let parametros: NavigationExtras = {
       state: {
         usuario: login,
@@ -45,14 +43,12 @@ export class DbService {
     /* Todo correcto, navegamos y retornamos */
     this.router.navigate(["principal"], parametros);
     return this.validador = true;
-
   }
 
   /*
    * Método para la validación de un correo de alumno DuocUC
    */
   async validarEmail(email: string): Promise<string> {
-
     const KL_DOMINIOALUMNODUOCUC = "@duocuc.cl"
     let validadorEmail: boolean = false;
 
@@ -69,13 +65,13 @@ export class DbService {
     let re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     validadorEmail = re.test(email);
     if (!validadorEmail)
-      return "Ingrese un e-mail válido!";
+      return "Ingrese un correo válido!";
 
-    /* Ahora validamos que sea un correo de alumno DuocUC en formato válido */
+    /* Validamos que sea un correo de alumno DuocUC en formato válido */
     if (email.substring(email.length - KL_DOMINIOALUMNODUOCUC.length, email.length) != KL_DOMINIOALUMNODUOCUC)
-      return "Ingrese tu correo de alumno DuocUC!";
+      return "Ingresa tu correo de alumno DuocUC!";
 
-    /* Obtenemos el login a partir del email y buscamos si el usuario está en la "base de datos" de usuarios */
+    /* Obtenemos el login a partir del email y validamos si el usuario está en la "base de datos" de usuarios */
     let login = email.substring(0, email.lastIndexOf("@"));
     let usuario = await this.obtenerUsuario(login);
     if (usuario == undefined)
@@ -84,20 +80,20 @@ export class DbService {
     /* Si está todo OK, navegamos a la siguiente página */
     this.router.navigate(["cambiar"], parametros);
     return "";
-
   }
   
   /*
    *  Método para obtener un objeto usuario a partir de un login
    */
-  async obtenerUsuario(login: string) {
+  async obtenerUsuario(login: string): Promise<any> {
     let bdUsuarios = await JSON.parse(localStorage.getItem("usuarios"));
     return await bdUsuarios.find(usuario => usuario.login === login);
   }
 
-  /* Método para el cambio de contraseña */
+  /*
+   * Método para el cambio de contraseña
+   */
   validarCambiarContrasena(pin: string, nuevapass: string, nuevapassrepetida: string): string {
-
     const KL_PIN: string = "1234";
 
     /* Validamos que el código enviado sea el correcto */
@@ -110,7 +106,6 @@ export class DbService {
 
     /* No hay error */
     return "";
-    
   }
 
 }
