@@ -15,7 +15,7 @@
 
   <ion-card>
     <ion-card-content>
-      Ingresa el código de 4 dígitos enviado a tu correo para poder cambiar tu contraseña por una nueva.
+      <p><span>&#8226;</span> Ingresa el código de recuperación de 4 dígitos enviado a tu correo DuocUC para poder cambiar tu contraseña</p>
     </ion-card-content>
   </ion-card>
 
@@ -44,6 +44,10 @@
       <ion-icon name="repeat-outline" slot="start"></ion-icon>
       Cambiar
     </ion-button>
+  </div>
+
+  <div class="ion-text-center ion-padding-top">
+    <a (click)="nuevoCodigo()" class="link" routerLink="/cambiar">Enviar nuevo código de recuperación</a>
   </div>
 
 </ion-content>

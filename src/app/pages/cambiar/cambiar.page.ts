@@ -62,6 +62,14 @@ export class CambiarPage implements OnInit {
      
   }
 
+  /*
+   * Método para reenviar el código de recuperación
+   */
+  nuevoCodigo() {
+    this.mostrarToast("Se envió nuevo código de recuperación a tu correo DuocUC!");
+    return;
+  }
+
   /* Rutina que maneja el cambio de contraseña */
   cambiar(): void {
     let mensaje = this.db.validarCambiarContrasena(this.mdl_pin, this.mdl_nuevapass, this.mdl_nuevapassrepetida);

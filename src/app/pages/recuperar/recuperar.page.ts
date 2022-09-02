@@ -40,12 +40,12 @@ export class RecuperarPage implements OnInit {
   }
 
   /* Rutina que maneja la navegación a la página de cambio de contraseña validando el e-mail DuocUC */
-  siguiente(): void {
+  async siguiente(): Promise<void> {
     
     let mensajeError: string = "";
 
     /* Validamos que sea un correo válido */
-    mensajeError = this.db.validarEmail(this.mdl_email);
+    mensajeError = await this.db.validarEmail(this.mdl_email);
     if (mensajeError != "") {
       this.mostrarToast(mensajeError);
     } 

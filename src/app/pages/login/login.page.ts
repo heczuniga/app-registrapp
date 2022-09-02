@@ -47,8 +47,8 @@ export class LoginPage implements OnInit {
   }
 
   /* Rutina que manejo el ingreso a la aplicación validando las credenciales */
-  ingresar(): void {
-    let validador = this.db.validarCredenciales(this.mdl_login, this.mdl_pass);
+  async ingresar(): Promise<void> {
+    let validador = await this.db.validarCredenciales(this.mdl_login, this.mdl_pass);
     if (!validador) {
       this.mostrarToast();
     } 

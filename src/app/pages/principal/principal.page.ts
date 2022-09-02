@@ -24,9 +24,9 @@ export class PrincipalPage implements OnInit {
   }
 
   /* Rutina que muestra mensaje en formato toast */
-  async mostrarToast() {
+  async mostrarToast(mensaje: string) {
     const toast = await this.toastController.create({
-      message: 'Funcionalidad no disponible',
+      message: mensaje,
       duration: 2000
     });
     toast.present();
@@ -34,9 +34,8 @@ export class PrincipalPage implements OnInit {
 
   /* Rutina que maneja el marcar la asistencia */
   marcarAsistencia(): void {
-
     /* Solo muestra un toast por el momento */
-    this.mostrarToast();
+    this.mostrarToast("Funcionalidad no disponible!");
   }
 
 }

@@ -13,19 +13,19 @@ export class DbService {
 
   /* Método estándar para el manejo de rutas protegidas */
   canActivate(): boolean {
-    if (this.validador) {
+
+    if (this.validador)
       return true;
-    } else {
-      this.router.navigate(["e404"]);
-      return false;
-    }
+
+    this.router.navigate(["e404"]);
+    return false;
 
   }
 
   /*
    * Método para la validación de credenciales de ingreso
    */
-  validarCredenciales(login: string, password: string): boolean {
+  async validarCredenciales(login: string, password: string): Promise<boolean> {
 
     let parametros: NavigationExtras = {
       state: {
@@ -33,36 +33,28 @@ export class DbService {
       }
     };
 
-    /* Determinamos si existe el usuario */
-    let usuario = this.obtenerUsuario(login);
-    if (this.obtenerUsuario(login) == undefined)
+    /* Si no podemos encontrar al login en la lista de usuarios, se retorna autenticación inválida */
+    let usuario = await this.obtenerUsuario(login);
+    if (usuario == undefined)
       return false;
 
-    /* Si no lo encuentra, se retorna autenticación inválida */
-    if (usuario === undefined) {
-      this.validador = false;
-      return this.validador;
-    }
+    /* Si no coincide login o password, se retorna autenticación inválida */
+    if (login !== usuario.login || password !== usuario.password)
+      return this.validador = false;
+    
+    /* Todo correcto, navegamos y retornamos */
+    this.router.navigate(["principal"], parametros);
+    return this.validador = true;
 
-    /* Lo encuentra, se chequea login y password */
-    if (login === usuario.login && password === usuario.password) {
-      this.validador = true;
-      this.router.navigate(["principal"], parametros);
-    } 
-    else
-      this.validador = false;
-
-    return this.validador;
   }
 
   /*
    * Método para la validación de un correo de alumno DuocUC
    */
-  validarEmail(email: string): string {
+  async validarEmail(email: string): Promise<string> {
 
     const KL_DOMINIOALUMNODUOCUC = "@duocuc.cl"
     let validadorEmail: boolean = false;
-    let login: string = "";
 
     /* Limpiamos el correo de espacios en blanco y lo dejamos en minúsculas */
     email = email.trim().toLowerCase();
@@ -73,7 +65,7 @@ export class DbService {
       }
     };
 
-    /* Validamos que sea un correo válido */
+    /* Validamos que sea un correo válido mediante expresiones regulares */
     let re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     validadorEmail = re.test(email);
     if (!validadorEmail)
@@ -81,14 +73,15 @@ export class DbService {
 
     /* Ahora validamos que sea un correo de alumno DuocUC en formato válido */
     if (email.substring(email.length - KL_DOMINIOALUMNODUOCUC.length, email.length) != KL_DOMINIOALUMNODUOCUC)
-      return "Ingrese un correo de alumno DuocUC válido!";
+      return "Ingrese tu correo de alumno DuocUC!";
 
     /* Obtenemos el login a partir del email y buscamos si el usuario está en la "base de datos" de usuarios */
-    login = email.substring(0, email.lastIndexOf("@"));
-    if (this.obtenerUsuario(login) == undefined)
-      return "El correo no corresponde al de un alumno DuocUC válido!";
+    let login = email.substring(0, email.lastIndexOf("@"));
+    let usuario = await this.obtenerUsuario(login);
+    if (usuario == undefined)
+      return "El correo no corresponde al de un alumno DuocUC vigente!";
 
-    /* Si está todo OK navegamos a la siguiente página */
+    /* Si está todo OK, navegamos a la siguiente página */
     this.router.navigate(["cambiar"], parametros);
     return "";
 
@@ -97,9 +90,9 @@ export class DbService {
   /*
    *  Método para obtener un objeto usuario a partir de un login
    */
-  obtenerUsuario(login: string): any {
-    let bdUsuarios = JSON.parse(localStorage.getItem("usuarios"));
-    return bdUsuarios.find(usuario => usuario.login === login);
+  async obtenerUsuario(login: string) {
+    let bdUsuarios = await JSON.parse(localStorage.getItem("usuarios"));
+    return await bdUsuarios.find(usuario => usuario.login === login);
   }
 
   /* Método para el cambio de contraseña */
@@ -109,11 +102,11 @@ export class DbService {
 
     /* Validamos que el código enviado sea el correcto */
     if (pin != KL_PIN)
-      return "El código de 4 dígitos ingresado no corresponde!";
+      return "El código de recuperación no corresponde!";
 
     /* Validamos que la nueva contraseña y su repetición coincidan */
     if (nuevapass != nuevapassrepetida)
-      return "La nueva contraseña y la contraseña repetida no coinciden!";
+      return "La repetición de la nueva contraseña no coincide!";
 
     /* No hay error */
     return "";
