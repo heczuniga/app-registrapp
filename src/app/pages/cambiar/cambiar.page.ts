@@ -69,17 +69,19 @@ export class CambiarPage implements OnInit {
   /*
    * Método para reenviar el código de recuperación
    */
-  nuevoCodigo() {
+  nuevoCodigo(): void {
     this.mostrarToast("Se envió nuevo código de recuperación a tu correo DuocUC!");
-    return;
   }
 
   /*
    * Método que maneja el cambio de contraseña
    */
-  cambiar(): void {
-    let mensaje = this.db.validarCambiarContrasena(this.mdl_pin, this.mdl_nuevapass, this.mdl_nuevapassrepetida);
-    let login: string = "";
+  async cambiar(): Promise<void> {
+    /* Obtenemos el login a partir del email*/
+    let login = this.mdl_email.substring(0, this.mdl_email.lastIndexOf("@"));
+
+    /* Validamos los parámetros para cambiar la contraseña */
+    let mensaje = await this.db.validarCambiarContrasena(login, this.mdl_pin, this.mdl_nuevapass, this.mdl_nuevapassrepetida);
 
     /* Hubo error en la validación para el cambio de contraseña */
     if (mensaje != "") {
@@ -88,9 +90,6 @@ export class CambiarPage implements OnInit {
     } 
 
     /* Todo OK, se modifica la contraseña en el localStorage, se manda mensaje al usuario y se le redirige a la página de login */
-    
-    /* Obtenemos el login a partir del email*/
-    login = this.mdl_email.substring(0, this.mdl_email.lastIndexOf("@"));
 
     /* Buscamos si el usuario está en la "base de datos" de usuarios */
     let bdUsuarios = JSON.parse(localStorage.getItem("usuarios"));

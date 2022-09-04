@@ -36,7 +36,7 @@ export class PrincipalPage implements OnInit {
   /*
    * Método que maneja el marcar la asistencia
    */
-  marcarAsistencia(): void {
+  async marcarAsistencia(): Promise<void> {
     /* Solo muestra un toast por el momento */
     this.mostrarToast("Funcionalidad no disponible!");
   }

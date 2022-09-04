@@ -17,6 +17,7 @@ export class DbService {
     if (this.validador)
       return true;
 
+    /* Navegamos a la página estándar de error */
     this.router.navigate(["e404"]);
     return false;
   }
@@ -25,12 +26,6 @@ export class DbService {
    * Método para la validación de credenciales de ingreso
    */
   async validarCredenciales(login: string, password: string): Promise<boolean> {
-    let parametros: NavigationExtras = {
-      state: {
-        usuario: login,
-      }
-    };
-
     /* Si no podemos encontrar al login en la lista de usuarios, se retorna autenticación inválida */
     let usuario = await this.obtenerUsuario(login);
     if (usuario == undefined)
@@ -40,8 +35,7 @@ export class DbService {
     if (login !== usuario.login || password !== usuario.password)
       return this.validador = false;
     
-    /* Todo correcto, navegamos y retornamos */
-    this.router.navigate(["principal"], parametros);
+    /* Todo correcto, marcamos el validador y lo retornamos como true */
     return this.validador = true;
   }
 
@@ -51,15 +45,6 @@ export class DbService {
   async validarEmail(email: string): Promise<string> {
     const KL_DOMINIOALUMNODUOCUC = "@duocuc.cl"
     let validadorEmail: boolean = false;
-
-    /* Limpiamos el correo de espacios en blanco y lo dejamos en minúsculas */
-    email = email.trim().toLowerCase();
-
-    let parametros: NavigationExtras = {
-      state: {
-        email: email,
-      }
-    };
 
     /* Validamos que sea un correo válido mediante expresiones regulares */
     let re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -77,8 +62,7 @@ export class DbService {
     if (usuario == undefined)
       return "El correo no corresponde al de un alumno DuocUC vigente!";
 
-    /* Si está todo OK, navegamos a la siguiente página */
-    this.router.navigate(["cambiar"], parametros);
+    /* Si está todo OK, retornamos string de error vacío */
     return "";
   }
   
@@ -91,13 +75,13 @@ export class DbService {
   }
 
   /*
-   * Método para el cambio de contraseña
+   * Método para validar los parámetros del cambio de contraseña
    */
-  validarCambiarContrasena(pin: string, nuevapass: string, nuevapassrepetida: string): string {
+  async validarCambiarContrasena(login: string, pin: string, nuevapass: string, nuevapassrepetida: string): Promise<string> {
     const KL_PIN: string = "1234";
 
     /* Validamos que el código enviado sea el correcto */
-    if (pin != KL_PIN)
+    if (await this.validarPIN(login, pin))
       return "El código de recuperación no corresponde!";
 
     /* Validamos que la nueva contraseña y su repetición coincidan */
@@ -106,6 +90,16 @@ export class DbService {
 
     /* No hay error */
     return "";
+  }
+
+  /*
+   * Método para validar el pin vigente de un login
+   */
+  async validarPIN(login: string, pin: string): Promise<boolean> {
+    const KL_PIN: string = "1234";
+
+    /* Por el momento de valida en duro contra "1234" */
+    return await !(pin === KL_PIN);
   }
 
 }

@@ -16,7 +16,7 @@ export class E404Page implements OnInit {
   /*
    *  Método para para volver a la página de login
    */
-  volver() {
+  volver(): void {
     this.router.navigate(['login']);
   }
 

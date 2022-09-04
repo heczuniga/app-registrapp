@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
+import { NavigationExtras, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { DbService } from 'src/app/services/db.service';
 
@@ -15,8 +14,7 @@ export class LoginPage implements OnInit {
   mdl_pass: string = '';
   mdl_deshabilitarbotoningresar: boolean = false;
 
-  constructor(private alertController: AlertController,
-          private db: DbService,
+  constructor(private db: DbService,
           private toastController: ToastController,
           private router: Router) {
   }
@@ -53,9 +51,21 @@ export class LoginPage implements OnInit {
    */
   async ingresar(): Promise<void> {
     let validador = await this.db.validarCredenciales(this.mdl_login, this.mdl_pass);
-    
-    if (!validador)
+
+    /* Autenticación no válida, mostramos Toast */
+    if (!validador) {
       this.mostrarToast();
+      return;
+    }
+
+    /* Autenticación válida, navegamos a la página principal llevándonos el login */
+    let parametros: NavigationExtras = {
+      state: {
+        usuario: this.mdl_login,
+      }
+    };
+
+    this.router.navigate(["principal"], parametros);
   }
 
 }
