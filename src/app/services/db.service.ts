@@ -6,7 +6,6 @@ import { NavigationExtras, Router } from '@angular/router';
 })
 export class DbService {
   validador: boolean = false;
-  validadorEmail: boolean = false;
 
   constructor(private router: Router) { }
 
