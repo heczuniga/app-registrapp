@@ -80,7 +80,7 @@ export class DbService {
     const KL_PIN: string = "1234";
 
     /* Validamos que el código enviado sea el correcto */
-    if (await this.validarPIN(login, pin))
+    if (!(await this.validarPIN(login, pin)))
       return "El código de recuperación no corresponde!";
 
     /* Validamos que la nueva contraseña y su repetición coincidan */
@@ -98,7 +98,7 @@ export class DbService {
     const KL_PIN: string = "1234";
 
     /* Por el momento de valida en duro contra "1234" */
-    return await !(pin === KL_PIN);
+    return await (pin === KL_PIN);
   }
 
 }
