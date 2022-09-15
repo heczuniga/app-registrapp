@@ -28,7 +28,7 @@ export class DbService {
     /* Si no podemos encontrar al login en la lista de usuarios, se retorna autenticación inválida */
     let usuario = await this.obtenerUsuario(login);
     if (usuario == undefined)
-      return false;
+      return this.validador = false;
 
     /* Si no coincide login o password, se retorna autenticación inválida */
     if (login !== usuario.login || password !== usuario.password)
@@ -37,6 +37,7 @@ export class DbService {
     /* Todo correcto, marcamos el validador y lo retornamos como true */
     return this.validador = true;
   }
+
 
   /*
    * Método para la validación de un correo de alumno DuocUC
