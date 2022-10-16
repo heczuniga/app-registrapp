@@ -1,25 +1,55 @@
 import { Injectable } from '@angular/core';
-import { NavigationExtras, Router } from '@angular/router';
+import { Router } from '@angular/router';
+import { AlertController, ToastController } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DbService {
   validador: boolean = false;
+  autenticado: boolean = false;
 
-  constructor(private router: Router) { }
+  constructor(private router: Router,
+            private toastController: ToastController,
+            private alertController: AlertController) { }
 
   /*
    * Método estándar para el manejo de rutas protegidas
    */
   canActivate(): boolean {
-    if (this.validador)
+    if (this.validador || this.autenticado)
       return true;
 
     /* Navegamos a la página estándar de error */
-    this.router.navigate(["e404"]);
+    this.router.navigate(["/e404"]);
     return false;
   }
+
+  /*
+   *  Método de uso genérico de mensajes en formato toast
+   */
+  async mostrarToast(mensaje: string) {
+    const toast = await this.toastController.create({
+      message: mensaje,
+      duration: 2000
+    });
+    
+    toast.present();
+  }
+
+  /*
+  * Método de uso genérico que muestra mensaje en formato alert
+  */
+  async mostrarMensaje(titulo: string, mensaje: string) {
+    const alert = await this.alertController.create({
+      header: titulo,
+      message: mensaje,
+      buttons: ["OK"],
+    });
+
+    await alert.present();
+  }
+
 
   /*
    * Método para la validación de credenciales de ingreso
@@ -55,12 +85,6 @@ export class DbService {
     /* Validamos que sea un correo de alumno DuocUC en formato válido */
     if (email.substring(email.length - KL_DOMINIOALUMNODUOCUC.length, email.length) != KL_DOMINIOALUMNODUOCUC)
       return "Ingresa tu correo de alumno DuocUC!";
-
-    /* Obtenemos el login a partir del email y validamos si el usuario está en la "base de datos" de usuarios */
-    let login = email.substring(0, email.lastIndexOf("@"));
-    let usuario = await this.obtenerUsuario(login);
-    if (usuario == undefined)
-      return "El correo no corresponde al de un alumno DuocUC vigente!";
 
     /* Si está todo OK, retornamos string de error vacío */
     return "";
@@ -100,6 +124,83 @@ export class DbService {
 
     /* Por el momento de valida en duro contra "1234" */
     return await (pin === KL_PIN);
+  }
+
+  /*
+   * Método para determinar si el usuario está o no autenticado en la aplicación
+   */
+  async estaAutenticado(): Promise<boolean> {
+    /* Recuperamos el login y el estado de autenticación desde la base de datos local del sistema */
+    let usuario = await this.recuperaUsuarioLocal();
+
+    return usuario.autenticado;
+  }
+
+  /*
+   * Método para recuperar datos del usuario y el estado de autenticación, ya sea desde la 
+    base de datos local o el localStorage
+   */
+  async recuperaUsuarioLocal(): Promise<any> {
+    let usuario: any;
+    let bd: boolean = false;
+
+    /* Leemos la configuración de la app y extraemos el parámetro bd que es un boolean que 
+      indica si se usará bd local o localStrorage*/
+    let configuracion = await JSON.parse(localStorage.getItem("configuracion"));
+    bd = configuracion[0].bd;
+
+    if (!bd) {
+      /* Se recupera el usuario desde el localStorage, no desde la BD */
+      usuario = configuracion[1];
+    }
+    else {
+    /* Se recupera el usuario desde la BD local */
+      usuario = {
+          email: "ma.villacura@duocuc.cl",
+          password: "mati",
+          nombre: "Matilde",
+          apellidos: "Villacura",
+          previamenteautenticado: true,
+        };
+    }
+
+    return await usuario;
+  }
+
+  /*
+   * Método para almacenar datos del usuario y el estado de autenticación en la base de datos local
+   */
+    async almacenaUsuarioLocal(email: string, password: string, nombre: string, apellidos: string, previamenteautenticado: boolean): Promise<void> {
+    let usuario: any;
+    let bd: boolean = false;
+
+    /* Leemos la configuración de la app y extraemos el parámetro bd que es un boolean que indica si se usará bd local o localStrorage*/
+    let configuracion = await JSON.parse(localStorage.getItem("configuracion"));
+    bd = configuracion[0].bd;
+
+    if (!bd) {
+      /* Se almacena el usuario en el localStorage, no en la BD */
+      let configuracion = JSON.parse(localStorage.getItem("configuracion"));
+
+      configuracion[1].email = email;
+      configuracion[1].password = password;
+      configuracion[1].nombre = nombre;
+      configuracion[1].apellidos = apellidos;
+      configuracion[1].previamenteautenticado = previamenteautenticado;
+      localStorage.setItem("configuracion", JSON.stringify(configuracion));
+      }
+    else {
+    /* Se almacena el usuario en la BD local */
+      usuario = {
+          email: "ma.villacura@duocuc.cl",
+          password: "mati",
+          nombre: "Matilde",
+          apellidos: "Villacura",
+          previamenteautenticado: true,
+        };
+    }
+
+    return;
   }
 
 }

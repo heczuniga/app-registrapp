@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
-import { ToastController } from '@ionic/angular';
+import { LoadingController } from '@ionic/angular';
+import { ApiService } from 'src/app/services/api.service';
 import { DbService } from 'src/app/services/db.service';
 
 @Component({
@@ -10,62 +11,121 @@ import { DbService } from 'src/app/services/db.service';
 })
 
 export class LoginPage implements OnInit {
-  mdl_login: string = '';
-  mdl_pass: string = '';
-  mdl_deshabilitarbotoningresar: boolean = false;
+  mdl_email: string = "";
+  mdl_password: string = "";
+  mdl_nombre: string = "";
+  mdl_apellidos: string = "";
+  mdl_previamenteautenticado: boolean = false;
+  mdl_deshabilitarboton: boolean = false;
 
   constructor(private db: DbService,
-          private toastController: ToastController,
+          private loadingController: LoadingController,
+          private api: ApiService,
           private router: Router) {
   }
 
-  ngOnInit() {
-    /* Deshabilitamos el botón al iniciar la página */
-    this.mdl_deshabilitarbotoningresar = true;
-  }
+  async ngOnInit() {
+    /* Recuperamos el usuario local. Si está previamente autenticado, navegamos directamente a la página principal */
+    let usuario = await this.db.recuperaUsuarioLocal();
+    let that= this;
+    that.loadingController.create({
+      message: "Ingresando a la aplicación...",
+      spinner: "crescent"
+      }).then(async data => {
+        data.present();
+        try {
+          if(usuario.previamenteautenticado) {
+            that.mdl_email = usuario.email;
+            that.mdl_password = usuario.password;
+            that.mdl_nombre = usuario.nombre;
+            that.mdl_apellidos = usuario.apellidos;
+            that.mdl_previamenteautenticado = usuario.previamenteautenticado;
+          
+            /* Autenticación válida, navegamos a la página principal llevándonos los datos del usuario */
+            let parametros: NavigationExtras = {
+              replaceUrl: true,
+              state: {
+                email: that.mdl_email,
+                password: that.mdl_password,
+                nombre: that.mdl_nombre,
+                apellidos: that.mdl_apellidos,
+                previamenteautenticado: that.mdl_previamenteautenticado,
+              }
+            };
+            that.db.validador = true;
+            that.router.navigate(["/principal"], parametros);
+          } else {
+            that.db.validador = false;
+          }
+        } catch (error) {
+          that.db.validador = false;
+        }
+        
+        data.dismiss();
+      });
 
-  /*
-   * Método que muestra mensaje en formato toast
-   */
-  async mostrarToast() {
-    const toast = await this.toastController.create({
-      message: 'Credenciales inválidas!',
-      duration: 2000
-    });
-    
-    toast.present();
+    /* Deshabilitamos el botón al iniciar la página */
+    this.mdl_deshabilitarboton = true;
   }
 
   /*
    * Método que habilita o deshabilita el botón de ingreso
    */
   habilitarBoton(): void {
-    if (this.mdl_login.length > 0 && this.mdl_pass.length > 0)
-      this.mdl_deshabilitarbotoningresar = false;
+    if (this.mdl_email.length > 0 && this.mdl_password.length > 0)
+      this.mdl_deshabilitarboton = false;
     else
-      this.mdl_deshabilitarbotoningresar = true;
+      this.mdl_deshabilitarboton = true;
   }
 
   /*
    * Método que maneja el ingreso a la aplicación validando las credenciales
    */
   async ingresar(): Promise<void> {
-    let validador = await this.db.validarCredenciales(this.mdl_login, this.mdl_pass);
+  /* Limpiamos el correo de espacios en blanco y lo dejamos en minúsculas */
+  this.mdl_email = this.mdl_email.trim().toLowerCase();
 
-    /* Autenticación no válida, mostramos Toast */
-    if (!validador) {
-      this.mostrarToast();
-      return;
-    }
+  /* Validamos que sea un correo válido */
+  let mensajeError = await this.db.validarEmail(this.mdl_email);
+  if (mensajeError != "") {
+    this.db.mostrarToast(mensajeError);
+    return;
+  }
 
-    /* Autenticación válida, navegamos a la página principal llevándonos el login */
-    let parametros: NavigationExtras = {
-      state: {
-        usuario: this.mdl_login,
+  /* Correo válido, validamos las credenciales y navegamos a la página principal */
+  let that= this;
+  that.loadingController.create({
+    message: "Validando credenciales...",
+    spinner: "crescent"
+    }).then(async data => {
+      data.present();
+      try {
+        let respuesta = await that.api.validarCredenciales(that.mdl_email, that.mdl_password);
+        if(respuesta["result"] === "LOGIN OK") {
+        /* Autenticación válida, navegamos a la página principal llevándonos el e-mail, password y el indicador de que no estábamos previamente autenticados */
+        let parametros: NavigationExtras = {
+          replaceUrl: true,
+          state: {
+            email: that.mdl_email,
+            password: that.mdl_password,
+            nombre: "",
+            apellidos: "",
+            previamenteautenticado: false,
+          }
+        };
+        that.db.validador = true;
+        that.router.navigate(["/principal"], parametros);
+        } else {
+          that.db.validador = false;
+          that.db.mostrarToast("Credenciales inválidas!");
+        }
+      } catch (error) {
+        that.db.validador = false;
+        that.db.mostrarToast("Error en la validación de credenciales!");
       }
-    };
-
-    this.router.navigate(["principal"], parametros);
+      
+      data.dismiss();
+    });
   }
 
 }

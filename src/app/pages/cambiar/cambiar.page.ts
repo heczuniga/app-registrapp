@@ -10,10 +10,10 @@ import { DbService } from 'src/app/services/db.service';
 })
 export class CambiarPage implements OnInit {
   mdl_email: string = "";
-  mdl_deshabilitarbotoncambiar: boolean = true;
+  mdl_deshabilitar: boolean = true;
   mdl_pin: string = "";
-  mdl_nuevapass: string = "";
-  mdl_nuevapassrepetida: string = "";
+  mdl_nuevapassword: string = "";
+  mdl_nuevapasswordrepetida: string = "";
   usuario: string = "";
   password: string = "";
 
@@ -27,50 +27,26 @@ export class CambiarPage implements OnInit {
     try {
       this.mdl_email = this.router.getCurrentNavigation().extras.state.email;
     } catch(err) {
-      this.router.navigate(["recuperar"]);
+      this.router.navigate(["/recuperar"]);
     }
   }
 
-  /*
-   * Método que muestra mensaje en formato alert
-   */
-  async mostrarMensaje(titulo: string, mensaje: string) {
-    const alert = await this.alertController.create({
-      header: titulo,
-      message: mensaje,
-      buttons: ['OK'],
-    });
-
-    await alert.present();
-  }
-
-  /*
-   * Método que muestra mensaje en formato toast
-   */
-  async mostrarToast(mensaje: string) {
-    const toast = await this.toastController.create({
-      message: mensaje,
-      duration: 2000
-    });
-
-    toast.present();
-  }
 
   /*
    * Método que habilita o deshabilita el botón de ingreso
    */
   habilitarBoton(): void {
-    if (this.mdl_pin.length === 4 && this.mdl_nuevapass.length > 0 && this.mdl_nuevapassrepetida.length > 0)
-      this.mdl_deshabilitarbotoncambiar = false;
+    if (this.mdl_pin.length === 4 && this.mdl_nuevapassword.length > 0 && this.mdl_nuevapasswordrepetida.length > 0)
+      this.mdl_deshabilitar = false;
     else
-      this.mdl_deshabilitarbotoncambiar = true;
+      this.mdl_deshabilitar = true;
   }
 
   /*
    * Método para reenviar el código de recuperación
    */
   nuevoCodigo(): void {
-    this.mostrarToast("Se envió nuevo código de recuperación a tu correo DuocUC!");
+    this.db.mostrarToast("Se envió nuevo código de recuperación a tu correo DuocUC!");
   }
 
   /*
@@ -81,11 +57,11 @@ export class CambiarPage implements OnInit {
     let login = this.mdl_email.substring(0, this.mdl_email.lastIndexOf("@"));
 
     /* Validamos los parámetros para cambiar la contraseña */
-    let mensaje = await this.db.validarCambiarContrasena(login, this.mdl_pin, this.mdl_nuevapass, this.mdl_nuevapassrepetida);
+    let mensaje = await this.db.validarCambiarContrasena(login, this.mdl_pin, this.mdl_nuevapassword, this.mdl_nuevapasswordrepetida);
 
     /* Hubo error en la validación para el cambio de contraseña */
     if (mensaje != "") {
-      this.mostrarToast(mensaje);
+      this.db.mostrarToast(mensaje);
       return;
     } 
 
@@ -97,16 +73,16 @@ export class CambiarPage implements OnInit {
 
     /* Si no lo encuentra, se retorna mostrando un error */
     if (usuario === undefined) {
-      this.mostrarToast("El correo no corresponde al de un alumno DuocUC válido!");
+      this.db.mostrarToast("El correo no corresponde al de un alumno DuocUC válido!");
       return;
     }
 
     /* Seteamos la nueva password */
-    usuario.password = this.mdl_nuevapass;
+    usuario.password = this.mdl_nuevapassword;
     localStorage.setItem("usuarios", JSON.stringify(bdUsuarios));
 
-    this.mostrarMensaje("Cambio de contraseña", "Se ha cambiado correctamente su contraseña. Se le redirigirá a la página de login.");
-    this.router.navigate(['/login']);
+    this.db.mostrarMensaje("Cambio de contraseña", "Se ha cambiado correctamente su contraseña. Se le redirigirá a la página de login.");
+    this.router.navigate(["/login"]);
   }
 
 }

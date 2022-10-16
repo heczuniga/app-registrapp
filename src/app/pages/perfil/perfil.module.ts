@@ -4,9 +4,9 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { PrincipalPageRoutingModule } from './principal-routing.module';
+import { PerfilPageRoutingModule } from './perfil-routing.module';
 
-import { PrincipalPage } from './principal.page';
+import { PerfilPage } from './perfil.page';
 import { MenuComponent } from 'src/app/components/menu/menu.component';
 
 @NgModule({
@@ -14,8 +14,8 @@ import { MenuComponent } from 'src/app/components/menu/menu.component';
     CommonModule,
     FormsModule,
     IonicModule,
-    PrincipalPageRoutingModule
+    PerfilPageRoutingModule
   ],
-  declarations: [PrincipalPage, MenuComponent]
+  declarations: [PerfilPage, MenuComponent]
 })
-export class PrincipalPageModule {}
+export class PerfilPageModule {}

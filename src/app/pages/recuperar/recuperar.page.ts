@@ -10,7 +10,7 @@ import { NavigationExtras, Router } from '@angular/router';
 })
 export class RecuperarPage implements OnInit {
   mdl_email: string = "";
-  mdl_deshabilitarbotonsiguiente = false;
+  mdl_deshabilitarboton = false;
 
   constructor(private db: DbService,
             private toastController: ToastController,
@@ -18,28 +18,18 @@ export class RecuperarPage implements OnInit {
 
   ngOnInit() {
     /* Deshabilitamos el botón al iniciar la página */
-    this.mdl_deshabilitarbotonsiguiente = true;
+    this.mdl_deshabilitarboton = true;
   }
 
-  /*
-   *  Método que muestra mensaje en formato toast
-   */
-  async mostrarToast(mensaje: string) {
-    const toast = await this.toastController.create({
-      message: mensaje,
-      duration: 2000
-    });
-    toast.present();
-  }
 
   /* 
    *  Método que habilita o deshabilita el botón siguiente
    */
   habilitarBoton(): void {
     if (this.mdl_email.length > 0)
-      this.mdl_deshabilitarbotonsiguiente = false;
+      this.mdl_deshabilitarboton = false;
     else
-      this.mdl_deshabilitarbotonsiguiente = true;
+      this.mdl_deshabilitarboton = true;
   }
 
   /*
@@ -52,7 +42,7 @@ export class RecuperarPage implements OnInit {
     /* Validamos que sea un correo válido */
     let mensajeError = await this.db.validarEmail(this.mdl_email);
     if (mensajeError != "") {
-      this.mostrarToast(mensajeError);
+      this.db.mostrarToast(mensajeError);
       return;
     }
 
@@ -62,7 +52,7 @@ export class RecuperarPage implements OnInit {
         email: this.mdl_email,
       }
     };
-    this.router.navigate(["cambiar"], parametros);
+    this.router.navigate(["/cambiar"], parametros);
   }
 
 }

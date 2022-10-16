@@ -29,6 +29,16 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
+    path: 'registro',
+    redirectTo: 'registro',
+    pathMatch: 'full'
+  },
+  {
+    path: 'perfil',
+    redirectTo: 'perfil',
+    pathMatch: 'full'
+  },
+  {
     path: 'e404',
     redirectTo: 'e404',
     pathMatch: 'full'
@@ -58,6 +68,15 @@ const routes: Routes = [
   {
     path: 'cambiar',
     loadChildren: () => import('./pages/cambiar/cambiar.module').then(m => m.CambiarPageModule)
+  },
+  {
+    path: 'registro',
+    loadChildren: () => import('./pages/registro/registro.module').then(m => m.RegistroPageModule)
+  },
+  {
+    path: 'perfil',
+    loadChildren: () => import('./pages/perfil/perfil.module').then(m => m.PerfilPageModule),
+    canActivate: [DbService],
   },
 
 

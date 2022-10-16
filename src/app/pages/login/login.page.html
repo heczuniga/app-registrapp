@@ -16,24 +16,27 @@
   </div>
 
   <ion-item>
-    <ion-label position="floating">Usuario</ion-label>
-    <ion-input autofocus="true" (keyup)="habilitarBoton()" [(ngModel)]="mdl_login"></ion-input>
+    <ion-label position="floating">Correo DuocUC</ion-label>
+    <ion-input autofocus="true" (keyup)="habilitarBoton()" [(ngModel)]="mdl_email"></ion-input>
   </ion-item>
 
   <ion-item>
     <ion-label position="floating">Contraseña</ion-label>
-    <ion-input (keyup)="habilitarBoton()" type="password" [(ngModel)]="mdl_pass"></ion-input>
+    <ion-input (keyup)="habilitarBoton()" type="password" [(ngModel)]="mdl_password"></ion-input>
   </ion-item>
 
   <div class="ion-text-center ion-padding-top">
-    <ion-button [disabled]="mdl_deshabilitarbotoningresar" (click)="ingresar()" expand="block" class="degradado">
+    <ion-button [disabled]="mdl_deshabilitarboton" (click)="ingresar()" expand="block" class="degradado">
       <ion-icon name="log-in" slot="start"></ion-icon>
       Ingresar
     </ion-button>
   </div>
 
   <div class="ion-text-center ion-padding-top">
-    <a class="link" href="recuperar">Olvidé mi contraseña</a>
+    <a class="link" href="registro">Registrarme</a>
   </div>
+  <!-- <div class="ion-text-center ion-padding-top">
+    <a class="link" href="recuperar">Olvidé mi contraseña</a>
+  </div> -->
 
 </ion-content>

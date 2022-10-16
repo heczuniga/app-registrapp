@@ -1,0 +1,49 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Registro de usuario</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <div class="ion-padding">
+    <ion-img class="fondo" src="assets/register.png"></ion-img>
+  </div>
+
+  <ion-item>
+    <ion-label position="floating">correo DuocUC</ion-label>
+    <ion-input autofocus="true" (keyup)="habilitarBoton()" [(ngModel)]="mdl_email"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="floating">Nombre</ion-label>
+    <ion-input autofocus="true" (keyup)="habilitarBoton()" [(ngModel)]="mdl_nombre"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="floating">Apellidos</ion-label>
+    <ion-input autofocus="true" (keyup)="habilitarBoton()" [(ngModel)]="mdl_apellidos"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="floating">Contraseña</ion-label>
+    <ion-input type="password" autofocus="true" (keyup)="habilitarBoton()" [(ngModel)]="mdl_password"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="floating">Repetir contraseña</ion-label>
+    <ion-input type="password" autofocus="true" (keyup)="habilitarBoton()" [(ngModel)]="mdl_passwordrepetida"></ion-input>
+  </ion-item>
+
+
+  <div class="ion-text-center ion-padding-top">
+    <ion-button inputmode="email" [disabled]="mdl_deshabilitarboton" (click)="registrarme()" expand="block" class="degradado">
+      <ion-icon name="person-add-outline" slot="start"></ion-icon>
+      Registrarme
+    </ion-button>
+  </div>
+
+</ion-content>
