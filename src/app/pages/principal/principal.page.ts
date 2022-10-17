@@ -14,7 +14,7 @@ export class PrincipalPage implements OnInit {
   mdl_password: string = "";
   mdl_nombre: string = "";
   mdl_apellidos: string = "";
-  mdl_previamenteautenticado: string = "";
+  mdl_previamenteautenticado: number = 0;
   mdl_usuario: any;
 
   constructor(private router: Router,
@@ -50,7 +50,7 @@ export class PrincipalPage implements OnInit {
         that.mdl_apellidos = that.mdl_usuario[0].APELLIDO;
 
         /* Ya que estamos dentro, guardamos los datos de la autenticación en la base de datos local */
-        await that.db.almacenaUsuarioLocal(that.mdl_email, that.mdl_password, that.mdl_nombre, that.mdl_apellidos, true);
+        await that.db.almacenaUsuarioLocal(that.mdl_email, that.mdl_password, that.mdl_nombre, that.mdl_apellidos, 1);
 
         result.dismiss();
       })
@@ -65,22 +65,22 @@ export class PrincipalPage implements OnInit {
     this.db.mostrarToast("Funcionalidad no disponible!");
   }
 
-  /*
-   * Método que maneja el acceso al menú de perfil
-   */
-  async administrarPerfil() {
-    /* Si el usuario está autenticado, puede navegar a esa página */
-    if (await this.db.estaAutenticado()) {
-      let parametros: NavigationExtras = {
-        replaceUrl: true,
-        state: {
-          email: this.mdl_email,
-          nombre: this.mdl_usuario[0].NOMBRE,
-          apellidos: this.mdl_usuario[0].APELLIDO,
-        }
-      };
-      this.router.navigate(["/perfil"], parametros);
-    }
-  }
+  // /*
+  //  * Método que maneja el acceso al menú de perfil
+  //  */
+  // async administrarPerfil() {
+  //   /* Si el usuario está autenticado, puede navegar a esa página */
+  //   if (await this.db.estaAutenticado()) {
+  //     let parametros: NavigationExtras = {
+  //       replaceUrl: true,
+  //       state: {
+  //         email: this.mdl_email,
+  //         nombre: this.mdl_usuario[0].NOMBRE,
+  //         apellidos: this.mdl_usuario[0].APELLIDO,
+  //       }
+  //     };
+  //     this.router.navigate(["/perfil"], parametros);
+  //   }
+  // }
 
 }

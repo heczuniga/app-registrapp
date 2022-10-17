@@ -19,10 +19,9 @@ export class LoginPage implements OnInit {
   mdl_deshabilitarboton: boolean = false;
 
   constructor(private db: DbService,
-          private loadingController: LoadingController,
-          private api: ApiService,
-          private router: Router) {
-  }
+                private loadingController: LoadingController,
+                private api: ApiService,
+                private router: Router) { }
 
   async ngOnInit() {
     /* Recuperamos el usuario local. Si está previamente autenticado, navegamos directamente a la página principal */
@@ -34,7 +33,8 @@ export class LoginPage implements OnInit {
       }).then(async data => {
         data.present();
         try {
-          if(usuario.previamenteautenticado) {
+          if(usuario.previamenteautenticado === 1) {
+          /* Si el usuario estaba previamente autenticado  */
             that.mdl_email = usuario.email;
             that.mdl_password = usuario.password;
             that.mdl_nombre = usuario.nombre;

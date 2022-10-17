@@ -16,6 +16,9 @@ export class MenuComponent implements OnInit {
 
   ngOnInit() {}
 
+  /*
+   * Método que maneja la navegación a la página de administrar perfil desde el menú
+   */
   async administrarPerfil() {
     let usuario = await this.db.recuperaUsuarioLocal();
 
@@ -31,6 +34,9 @@ export class MenuComponent implements OnInit {
     this.router.navigate(["/perfil"], parametros);
   }
 
+  /*
+   * Método que maneja la navegación a la página de marcar asistencia desde el menú
+   */
   async marcarAsistencia() {
     let usuario = await this.db.recuperaUsuarioLocal();
 
@@ -46,9 +52,12 @@ export class MenuComponent implements OnInit {
     this.router.navigate(["/principal"], parametros);
   }
 
+    /*
+   * Método que maneja el cerrado de la sesión y la navegación a la página de login desde el menú
+   */
   async cerrarSesion() {
     /* Eliminamos los datos de conexión en la base de datos local y redirigimos al login */
-    await this.db.almacenaUsuarioLocal("", "", "", "", false);
+    await this.db.almacenaUsuarioLocal("", "", "", "", 0);
 
     let parametros: NavigationExtras = {
       replaceUrl: true,

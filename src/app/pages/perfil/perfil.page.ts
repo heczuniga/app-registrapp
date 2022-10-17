@@ -68,7 +68,7 @@ export class PerfilPage implements OnInit {
           let respuesta = await that.api.cambiarContrasena(that.mdl_email, that.mdl_password);
           if(respuesta["result"][0].RESPUESTA === "OK") {
           /* Autenticación válida, grabamos en la base de datos local, entregamos mensaje y navegamos a la página principal llevándonos el e-mail */
-            that.db.almacenaUsuarioLocal(that.mdl_email, that.mdl_password, that.mdl_nombre, that.mdl_apellidos, true);
+            that.db.almacenaUsuarioLocal(that.mdl_email, that.mdl_password, that.mdl_nombre, that.mdl_apellidos, 1);
             that.db.mostrarMensaje("Cambio de contraseña", "Contraseña cambiada correctamente!");
             that.limpiar();
           } else {

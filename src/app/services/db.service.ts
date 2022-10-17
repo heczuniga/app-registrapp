@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { SQLite, SQLiteObject } from '@ionic-native/sqlite/ngx';
 import { AlertController, ToastController } from '@ionic/angular';
 
 @Injectable({
@@ -10,9 +11,76 @@ export class DbService {
   autenticado: boolean = false;
 
   constructor(private router: Router,
-            private toastController: ToastController,
-            private alertController: AlertController) { }
+                private toastController: ToastController,
+                private alertController: AlertController,
+                private sqlite: SQLite) {
 
+      let configuracion = JSON.parse(localStorage.getItem("configuracion"));
+      let bd = configuracion[0].bd;
+              
+      if (!bd) return;
+
+      // this.sqlite.deleteDatabase({
+      //   name: "datos.db",
+      //   location: "default"
+      // }).then((db: SQLiteObject) => {
+      //   alert("Base de datos eliminada");
+      // }).catch(e => {
+      //   alert("Base de datos no eliminada");
+      // });
+
+      /* Se crea la base de datos */
+      this.sqlite.create({
+        name: "datos.db",
+        location: "default"
+      }).then((db: SQLiteObject) => {
+        const sql: string = "create table if not exists configuracion(app varchar(100) primary key, " +
+                        "     email varchar(100), " +
+                        "     password varchar(100), " +
+                        "     nombre varchar(100), " +
+                        "     apellidos varchar(100), " +
+                        "     previamente_autenticado integer)";
+        db.executeSql(sql, []).then(() => {
+          console.log("Tabla configuracion creada correctamente");
+        }).catch(e => {
+          this.mostrarMensaje("Error en creación de tabla de configuración!", e);
+        });
+      }).catch(e => {
+        this.mostrarMensaje("Error en la conexión a la base de datos!", e);
+      });
+
+      // this.sqlite.create({
+      //   name: "datos.db",
+      //   location: "default"
+      // }).then((db: SQLiteObject) => {
+      //   const sql: string = "delete from configuracion where app = ?";
+      //   db.executeSql(sql, ["RegistrApp"]).then(() => {
+      //     alert("Eliminación de datos correcta almacenada correctamente");
+      //     console.log("Eliminación de datos correcta almacenada correctamente");
+      //   });
+      // }).catch(e => {
+      //   alert(e);
+      // })
+
+
+      /* Se almacena un registro vacío en la BD local */
+      // this.sqlite.create({
+      //   name: "datos.db",
+      //   location: "default"
+      // }).then((db: SQLiteObject) => {
+      //   const sql: string = "insert or replace into configuracion values (?, ?, ?, ?, ?, ?)";
+      //   db.executeSql(sql, ["RegistrApp", "email", "password", "nombre", "apellidos", 0]).then(() => {
+      //     alert("Configuración almacenada correctamente");
+      //     console.log("Configuración almacenada correctamente");
+      //   });
+      // }).catch(e => {
+      //   alert(e);
+      // })
+
+  }
+
+
+            
   /*
    * Método estándar para el manejo de rutas protegidas
    */
@@ -150,27 +218,43 @@ export class DbService {
     bd = configuracion[0].bd;
 
     if (!bd) {
-      /* Se recupera el usuario desde el localStorage, no desde la BD */
+    /* Se recupera el usuario desde el localStorage, no desde la BD */
       usuario = configuracion[1];
-    }
-    else {
+    } else {
     /* Se recupera el usuario desde la BD local */
-      usuario = {
-          email: "ma.villacura@duocuc.cl",
-          password: "mati",
-          nombre: "Matilde",
-          apellidos: "Villacura",
-          previamenteautenticado: true,
-        };
+      await this.sqlite.create({
+        name: "datos.db",
+        location: "default"  
+      }).then(async (db: SQLiteObject) => {
+        const sql: string = "select c.email, " + 
+                          " c.password, " + 
+                          " c.nombre, " + 
+                          " c.apellidos, " +
+                          " c.previamente_autenticado " +
+                          "from configuracion c " + 
+                          "where c.app = ?";
+        await db.executeSql(sql, ["RegistrApp"]).then((data) => {
+
+          /* Le damos la estructura al objeto usuario antes de copiar los valores */
+          usuario = configuracion[1];
+          usuario.email = data.rows.item(0).email;
+          usuario.password = data.rows.item(0).password;
+          usuario.nombre = data.rows.item(0).nombre;
+          usuario.apellidos = data.rows.item(0).apellidos;
+          usuario.previamenteautenticado = data.rows.item(0).previamente_autenticado;
+        });
+      }).catch(e => {
+        alert(e);
+      })
     }
 
-    return await usuario;
+    return usuario;
   }
 
   /*
    * Método para almacenar datos del usuario y el estado de autenticación en la base de datos local
    */
-    async almacenaUsuarioLocal(email: string, password: string, nombre: string, apellidos: string, previamenteautenticado: boolean): Promise<void> {
+    async almacenaUsuarioLocal(email: string, password: string, nombre: string, apellidos: string, previamenteautenticado: number): Promise<void> {
     let usuario: any;
     let bd: boolean = false;
 
@@ -191,13 +275,23 @@ export class DbService {
       }
     else {
     /* Se almacena el usuario en la BD local */
-      usuario = {
-          email: "ma.villacura@duocuc.cl",
-          password: "mati",
-          nombre: "Matilde",
-          apellidos: "Villacura",
-          previamenteautenticado: true,
-        };
+      this.sqlite.create({
+        name: "datos.db",
+        location: "default"
+      }).then((db: SQLiteObject) => {
+        const sql: string = "update configuracion " +
+                            " set email = ?, " + 
+                            "   password = ?, " + 
+                            "   nombre = ?, " + 
+                            "   apellidos = ?, " + 
+                            "   previamente_autenticado = ? " +
+                            "where app = ?";
+        db.executeSql(sql, [email, password, nombre, apellidos, previamenteautenticado, "RegistrApp"]).then(() => {
+          console.log("Configuración almacenada correctamente");
+        });
+      }).catch(e => {
+        this.mostrarMensaje("Error el modificar la tabla de configuración!", e);
+      })
     }
 
     return;
