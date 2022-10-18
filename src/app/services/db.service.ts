@@ -145,11 +145,9 @@ export class DbService {
       indica si se usará bd local o localStrorage*/
     let configuracion = await JSON.parse(localStorage.getItem("configuracion"));
     bd = configuracion[0].bd;
+    usuario = configuracion[1];
 
-    if (!bd) {
-    /* Se recupera el usuario desde el localStorage, no desde la BD */
-      usuario = configuracion[1];
-    } else {
+    if (bd) {
     /* Se recupera el usuario desde la BD local */
       await this.sqlite.create({
         name: "datos.db",
@@ -165,7 +163,6 @@ export class DbService {
         await db.executeSql(sql, ["RegistrApp"]).then((data) => {
 
           /* Le damos la estructura al objeto usuario antes de copiar los valores */
-          usuario = configuracion[1];
           usuario.email = data.rows.item(0).email;
           usuario.password = data.rows.item(0).password;
           usuario.nombre = data.rows.item(0).nombre;

@@ -13,14 +13,14 @@ export class AppComponent {
       base de datos local o el localStorage, y la especificación del usuario en el caso de usar
       localStorage */
     let bdConfiguracion = [
-      { "bd": true,
+      { "bd": false,
       },
       {
         "email": "hec.zuniga@duocuc.cl",
-        "password": "papa",
+        "password": "uc4cc0",
         "nombre": "Héctor",
         "apellidos": "Zúñiga Luarte",
-        "previamenteautenticado": 0, /* 1=true; 0=false*/
+        "previamenteautenticado": 1, /* 1=true; 0=false*/
       },
     ]
 

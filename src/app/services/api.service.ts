@@ -64,6 +64,10 @@ export class ApiService {
     let usuario = await this.db.recuperaUsuarioLocal();
     let password = usuario.password;
 
+    console.log(password);
+    console.log(email);
+    console.log(nuevapassword);
+
     return new Promise(resolve => {
       resolve(that.http.patch(that.ruta, {
         nombreFuncion: "UsuarioModificarContrasena",
