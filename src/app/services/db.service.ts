@@ -18,18 +18,10 @@ export class DbService {
       let configuracion = JSON.parse(localStorage.getItem("configuracion"));
       let bd = configuracion[0].bd;
               
+      /* Si no se trabaja con base de datos, no se hace nada más */
       if (!bd) return;
 
-      // this.sqlite.deleteDatabase({
-      //   name: "datos.db",
-      //   location: "default"
-      // }).then((db: SQLiteObject) => {
-      //   alert("Base de datos eliminada");
-      // }).catch(e => {
-      //   alert("Base de datos no eliminada");
-      // });
-
-      /* Se crea la base de datos */
+      /* Se crea la base de datos y la tabla de configuración si es que no existe */
       this.sqlite.create({
         name: "datos.db",
         location: "default"
@@ -49,36 +41,7 @@ export class DbService {
         this.mostrarMensaje("Error en la conexión a la base de datos!", e);
       });
 
-      // this.sqlite.create({
-      //   name: "datos.db",
-      //   location: "default"
-      // }).then((db: SQLiteObject) => {
-      //   const sql: string = "delete from configuracion where app = ?";
-      //   db.executeSql(sql, ["RegistrApp"]).then(() => {
-      //     alert("Eliminación de datos correcta almacenada correctamente");
-      //     console.log("Eliminación de datos correcta almacenada correctamente");
-      //   });
-      // }).catch(e => {
-      //   alert(e);
-      // })
-
-
-      /* Se almacena un registro vacío en la BD local */
-      // this.sqlite.create({
-      //   name: "datos.db",
-      //   location: "default"
-      // }).then((db: SQLiteObject) => {
-      //   const sql: string = "insert or replace into configuracion values (?, ?, ?, ?, ?, ?)";
-      //   db.executeSql(sql, ["RegistrApp", "email", "password", "nombre", "apellidos", 0]).then(() => {
-      //     alert("Configuración almacenada correctamente");
-      //     console.log("Configuración almacenada correctamente");
-      //   });
-      // }).catch(e => {
-      //   alert(e);
-      // })
-
   }
-
 
             
   /*
@@ -93,6 +56,7 @@ export class DbService {
     return false;
   }
 
+
   /*
    *  Método de uso genérico de mensajes en formato toast
    */
@@ -105,6 +69,7 @@ export class DbService {
     toast.present();
   }
 
+  
   /*
   * Método de uso genérico que muestra mensaje en formato alert
   */
@@ -158,42 +123,6 @@ export class DbService {
     return "";
   }
   
-  /*
-   *  Método para obtener un objeto usuario a partir de un login
-   */
-  async obtenerUsuario(login: string): Promise<any> {
-    let bdUsuarios = await JSON.parse(localStorage.getItem("usuarios"));
-    return await bdUsuarios.find(usuario => usuario.login === login);
-  }
-
-  /*
-   * Método para validar los parámetros del cambio de contraseña
-   */
-  async validarCambiarContrasena(login: string, pin: string, nuevapass: string, nuevapassrepetida: string): Promise<string> {
-    const KL_PIN: string = "1234";
-
-    /* Validamos que el código enviado sea el correcto */
-    if (!(await this.validarPIN(login, pin)))
-      return "El código de recuperación no corresponde!";
-
-    /* Validamos que la nueva contraseña y su repetición coincidan */
-    if (nuevapass != nuevapassrepetida)
-      return "La repetición de la nueva contraseña no coincide!";
-
-    /* No hay error */
-    return "";
-  }
-
-  /*
-   * Método para validar el pin vigente de un login
-   */
-  async validarPIN(login: string, pin: string): Promise<boolean> {
-    const KL_PIN: string = "1234";
-
-    /* Por el momento de valida en duro contra "1234" */
-    return await (pin === KL_PIN);
-  }
-
   /*
    * Método para determinar si el usuario está o no autenticado en la aplicación
    */
@@ -296,5 +225,41 @@ export class DbService {
 
     return;
   }
+
+    /*
+   *  Método para obtener un objeto usuario a partir de un login
+   */
+    async obtenerUsuario(login: string): Promise<any> {
+      let bdUsuarios = await JSON.parse(localStorage.getItem("usuarios"));
+      return await bdUsuarios.find(usuario => usuario.login === login);
+    }
+  
+    /*
+     * Método para validar los parámetros del cambio de contraseña
+     */
+    async validarCambiarContrasena(login: string, pin: string, nuevapass: string, nuevapassrepetida: string): Promise<string> {
+      const KL_PIN: string = "1234";
+  
+      /* Validamos que el código enviado sea el correcto */
+      if (!(await this.validarPIN(login, pin)))
+        return "El código de recuperación no corresponde!";
+  
+      /* Validamos que la nueva contraseña y su repetición coincidan */
+      if (nuevapass != nuevapassrepetida)
+        return "La repetición de la nueva contraseña no coincide!";
+  
+      /* No hay error */
+      return "";
+    }
+  
+    /*
+     * Método para validar el pin vigente de un login
+     */
+    async validarPIN(login: string, pin: string): Promise<boolean> {
+      const KL_PIN: string = "1234";
+  
+      /* Por el momento de valida en duro contra "1234" */
+      return await (pin === KL_PIN);
+    }
 
 }
